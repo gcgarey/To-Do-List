@@ -35,10 +35,11 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element(By.ID, "id_list_table")
         rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertTrue(
-            any(row.text == "1: Make some slides" for row in rows),
-            "New to-do item did not appear in the table",
-            )
+        self.assertIn("1: Make some slides", 
+                      [row.text for row in rows])
+
+        self.assertIn("2: Drink a coffee", 
+                      [row.text for row in rows])
 
         #there is still a text box inviting me to add another item.
         #enter "read the textbook"
