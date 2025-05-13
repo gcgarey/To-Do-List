@@ -11,6 +11,11 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element(By.ID, "id_list_table")
+        rows = table.find_elements(By.TAG_NAME, "tr")
+        self.assertIn(row_text, [row.text for row in rows])
+
     def test_can_start_a_todo_list(self):
         # I heard about a cool new online to-do app. 
         # so I went to check out its home page
@@ -32,19 +37,20 @@ class NewVisitorTest(unittest.TestCase):
         #lists "make some slides" as an item
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-
-        table = self.browser.find_element(By.ID, "id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertIn("1: Make some slides", 
-                      [row.text for row in rows])
-
-        self.assertIn("2: Drink a coffee", 
-                      [row.text for row in rows])
+        self.check_for_row_in_list_table("1: Make some slides")
 
         #there is still a text box inviting me to add another item.
         #enter "read the textbook"
-        self.fail("finish the test")
+        inputbox = self.browser.find_element(By.ID, "id_new_item")
+        inputbox.send_keys("read the textbook")
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+
 
         #the page updates again and shows both items on my list
+        self.check_for_row_in_list_table("1: Make some slides")
+        self.check_for_row_in_list_table("2: read the textbook")
+
+        # Good. I will go back to sleep now
 if __name__ == "__main__":
     unittest.main()
