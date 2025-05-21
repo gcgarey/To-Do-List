@@ -10,8 +10,8 @@ class HomePageTest(TestCase):
         Item.objects.create(text="itemy 1")
         Item.objects.create(text="itemy 2")
         response = self.client.get("/")
-        self.assertContains(response, "itemey 1")
-        self.assertContains(response, "itemey 2")
+        self.assertContains(response, "itemy 1")
+        self.assertContains(response, "itemy 2")
 
     def test_can_save_a_POST_request(self):
         self.client.post("/", data={"item_text": "A new list item"})
