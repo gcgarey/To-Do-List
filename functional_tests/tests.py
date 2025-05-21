@@ -3,8 +3,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
+from django.test import LiveServerTestCase
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
 
@@ -19,7 +20,7 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_todo_list(self):
         # I heard about a cool new online to-do app. 
         # so I went to check out its home page
-        self.browser.get("http://localhost:8000")
+        self.browser.get(self.live_server_url)
 
         #Here is where I notice the page title and header 
         self.assertIn("To-Do", self.browser.title)
