@@ -85,7 +85,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Carol visits the home page. There is no sign of
         # my list
         self.browser.get(self.live_server_url)
-        page_text = self.browser.find_element(By.ID, "id_new_item")
+        page_text = self.browser.find_element(By.TAG_NAME, "body").text
         self.assertNotIn("make some slides", page_text)
         self.assertNotIn("make a fly", page_text)
 
