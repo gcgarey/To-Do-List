@@ -63,5 +63,51 @@ class NewVisitorTest(LiveServerTestCase):
         self.wait_for_row_in_list_table("2: read the textbook")
 
         # Good. I will go back to sleep now
+
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        # I start a new to-do list
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element(By.ID, "id_new_item")
+        inputbox.send_keys("make some slides")
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table("1: make some slides")
+
+        # I notice that my list has a unique url
+        my_list_url = self.browser.current_url
+        self.assertRegex(my_list_url, "/lists/.+") # from unittest. Does string match expression
+
+        # Now a new user, Carol, comes along to the site. 
+
+        # We delete all the browser's cookies
+        # as a way of simulating a brand new user session
+        self.browser.delete_all_cookies()
+
+        # Carol visits the home page. There is no sign of
+        # my list
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element(By.ID, "id_new_item")
+        self.assertNotIn("make some slides", page_text)
+        self.assertNotIn("make a fly", page_text)
+
+        # Carol starts a new list by entering a new item. 
+        inputbox = self.browser.find_element(By.ID, "id_new_item")
+        inputbox.send_keys("buy milk")
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table("1: buy milk")
+
+        # Carol gets her own unique URL
+        carol_list_url = self.browser.current_url
+        self.assertRegex(carol_list_url, "/lists/.+")
+        self.assertNotEqual(carol_list_url, my_list_url)
+
+        # Again, there is no trace of my list
+        page_text = self.browser.find_element(By.TAG_NAME, "body").text
+        self.assertNotIn("make some slides", page_text)
+        self.assertIn("buy milk", page_text)
+
+        # Satisfied, they both go back to sleep
+
+
+
 if __name__ == "__main__":
     unittest.main()
